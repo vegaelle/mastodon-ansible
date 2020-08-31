@@ -4,7 +4,7 @@
 
 - name: Clone Mastodon
   git:
-    repo: "https://github.com/mastodon/mastodon.git"
+    repo: "{{ mastodon_repo }}"
     dest: "{{ mastodon_home }}/{{mastodon_path}}"
     clone: true
     version: "{{ latest_mastodon_tag.stdout }}"
@@ -23,6 +23,8 @@
 "
   args:
     chdir: "{{ mastodon_home }}/{{ mastodon_path }}"
+  environment:
+    RBENV_VERSION: "{{ ruby_version }}"
 
 - name: Yarn install
   command: yarn install --pure-lockfile
@@ -113,7 +115,7 @@
   shell: "RAILS_ENV=production ~/.rbenv/shims/bundle exec rails db:migrate"
   args:
     chdir: "{{ mastodon_home }}/{{ mastodon_path }}"
-  when: production_config.stat.exists
+  # when: production_config.stat.exists
 
 - name: Ensure that we have correct file permissions with owner being the user and NGINX being the group
   become: yes

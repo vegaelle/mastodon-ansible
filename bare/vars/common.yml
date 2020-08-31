@@ -5,6 +5,7 @@ ruby_build_version: "v20220426"
 bundler_version: "2.1.4"
 node_major_version: "16"
 os_family: "{{ ansible_os_family|lower }}"
+mastodon_repo: "https://github.com/tootsuite/mastodon.git"
 mastodon_user: "mastodon"
 mastodon_home: "/home/{{ mastodon_user }}"
 mastodon_db_user: "{{ mastodon_user }}"
@@ -23,3 +24,5 @@ redis_port: 6379
 db_host: /var/run/postgresql
 self_signed_cert_location: /etc/ssl/certs
 self_signed_key_location: /etc/ssl/private
+disable_nginx: "false"
+disable_ufw: "false"

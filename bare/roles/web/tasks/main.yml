@@ -23,6 +23,7 @@
         - firewall
   when: 
   - ansible_os_family == "Debian"
+  - disable_ufw | bool == false
 
 - include_tasks: firewall-cmd.yml
   args:
@@ -32,6 +33,7 @@
         - firewall
   when: 
   - ansible_os_family == "RedHat"
+  - disable_ufw | bool == false
 
 - include_tasks: ruby.yml
   args:
@@ -56,9 +58,12 @@
       become: true
       tags:
         - letsencrypt 
-  when: disable_letsencrypt | bool == false
+  when:
+    - disable_letsencrypt | bool == false
+    - disable_nginx | bool == false
 
 - include_tasks: nginx.yml
   args:
     apply:
       become: true
+  when: disable_nginx | bool == false
