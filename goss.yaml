@@ -8,12 +8,19 @@ file:
     owner: "mastodon"
     group: "mastodon"
     filetype: "file"
-    mode: "0664"
     contains: ["rbenv init -", "PATH="]
   /usr/bin/node:
     exists: true
     filetype: "file"
     mode: "0755"
+  /etc/letsencrypt/live/mastodon.local/fullchain.pem:
+    exists: true
+    filetype: "symlink"
+    mode: "0777"
+  /etc/letsencrypt/live/mastodon.local/privkey.pem:
+    exists: true
+    filetype: "symlink"
+    mode: "0777" 
   /home/mastodon/.rbenv/plugins/ruby-build/bin/ruby-build:
     exists: true
     filetype: "file"
@@ -56,10 +63,14 @@ service:
 
 command:
   ruby:
+  #Previous implementation was directly checking against a fixed version and required manual update every time mastodon updated it's ruby version
+  #With this current implementation, we directly check against the ruby version requested by Mastodon against what eventually got installed
+  #Also can't use True or False as stdout output because Ubuntu is doing something funny and turning the string into a boolean and it fails the test. No I don't know why.
     exit-status: 0
-    exec: "sudo -u mastodon -i ruby -v"
+    exec: >-
+        [[ "$(sudo -u mastodon -i cat /home/mastodon/live/.ruby-version)" == "$(sudo -u mastodon -i ruby -v | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')" ]] && echo "Match" || echo "No Match"
     stdout:
-      - "3.0.3"
+      - "Match" 
   crontab:
     exit-status: 0
     exec: "sudo crontab -l -u mastodon"
@@ -78,6 +89,16 @@ command:
   postgres:
     exit-status: 0
     exec: "PGPASSWORD=CHANGEME psql -d mastodon_instance -h 127.0.0.1 -U mastodon -c 'CREATE TABLE test (v varchar(20)); DROP TABLE test;'"
+  jemalloc:
+    exit-status: 0
+    exec: "sudo -u mastodon -i bash -c 'ldd $(rbenv which ruby) | grep -q libjemalloc'"
+
+http:
+  https://mastodon.local/:
+    status: 200
+    allow-insecure: true
+    no-follow-redirects: false
+    body: [ mastodon.local ]
 
 user:
   mastodon:

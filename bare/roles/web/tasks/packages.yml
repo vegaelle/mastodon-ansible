@@ -1,21 +1,16 @@
----
-
 #Speeds up the provisioning process as cache is not updated for every single package.
 - name: Update package manager cache before installing packages.
   become: yes
   package:
     update_cache: yes
-
 - name: Install packages
   package:
-    name: "{{ item.package }}"
+    name: "{{ packages | map(attribute='package') }}"
     update_cache: no
     #This makes the package module non-OS generic
     #https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html
     #    state: latest
     #    install_recommends: no
-  with_items: "{{ packages }}"
-
 #RHEL and Debian already has NodeJS in /usr/bin/node
 #Unclear what this is supposed to fix
 #- name: nodejs alternative
@@ -24,3 +19,9 @@
 #    link: /usr/bin/node
 #    path: /usr/bin/nodejs
 #  when: ansible_os_family == "Debian"
+- name: Install Perl for building OpenSSL 1.1
+  become: yes
+  package:
+    name: "perl"
+    state: present
+  when: (ansible_os_family == "RedHat" and ansible_facts['distribution_major_version'] == "9") or (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_release'] == 'jammy')

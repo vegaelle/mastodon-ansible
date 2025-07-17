@@ -1,11 +1,20 @@
 ---
-
 - name: Bootstrapping
   gather_facts: False
   hosts: all
   roles:
     - init
 
+- name: Preflight Checks
+  gather_facts: True
+  hosts: all
+  vars_files:
+    - "vars/common.yml"
+  roles:
+    - preflight
+  tags:
+    - preflight
+
 - hosts: all
   vars_files:
     - "vars/common.yml"
@@ -32,3 +41,5 @@
     - web
   tags:
     - web
+  environment:
+    RUBY_CONFIGURE_OPTS: "--with-jemalloc"

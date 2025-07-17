@@ -1,13 +1,12 @@
-mastodon_db_login_unix_socket: '/var/run/postgresql'
+mastodon_db_login_unix_socket: "/var/run/postgresql"
 
 packages:
-
   - package: "epel-release"
   - package: "autoconf"
   - package: "bison"
   - package: "make"
   - package: "curl"
-#  - package: "cron" installed by default
+  #  - package: "cron" installed by default
   - package: "ffmpeg"
   - package: "file"
   - package: "gcc-c++"
@@ -21,21 +20,26 @@ packages:
   - package: "ncurses-devel"
   - package: "libpq-devel"
   - package: "protobuf-devel"
+  - package: "python3-policycoreutils"
+  - package: "policycoreutils-python-utils"
   - package: "readline-devel"
   - package: "openssl-devel"
   - package: "libxml2-devel"
   - package: "libxslt-devel"
   - package: "libyaml-devel"
   - package: "nginx"
+  - package: "jemalloc-devel"
   #- package: "nodejs" see nodejs.yml
   - package: "pkg-config"
   - package: "protobuf-compiler"
   - package: "sudo"
   - package: "systemd"
+  - package: "tar"
   - package: "firewalld"
   - package: "dnf-automatic"
   - package: "yarn"
   - package: "zlib-devel"
+  - package: "python3-virtualenv"
 
 postgres:
   packages:
