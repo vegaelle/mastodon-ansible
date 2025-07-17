@@ -1,9 +1,10 @@
 run_preflight_checks: "true"
 node_major_version: "16"
 os_family: "{{ ansible_os_family|lower }}"
+mastodon_repo: "https://github.com/mastodon/mastodon.git"
 #Please list a valid name of the tag from Mastodon's Github.
 #Accepted format is "vX.X.XrcX"
-mastodon_version: "latest" 
+mastodon_version: "latest"
 mastodon_allow_prerelease: "false"
 mastodon_user: "mastodon"
 mastodon_home: "/home/{{ mastodon_user }}"
@@ -14,6 +15,7 @@ mastodon_db_port: 5432
 mastodon_nginx_symlink: "/var/www/html/mastodon"
 disable_hsts: "false"
 disable_letsencrypt: "false"
+disable_nginx: "false"
 #Should be filled by user as a raised concern: https://github.com/mastodon/mastodon-ansible/pull/46#discussion_r1064445790
 #Format: "webmaster@mastodon.local"
 letsencrypt_email: ""
